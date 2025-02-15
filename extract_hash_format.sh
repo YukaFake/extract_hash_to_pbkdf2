@@ -14,9 +14,10 @@ if [ ! -f "$DB_FILE" ]; then
     exit 1
 fi
 
-# Extrae y convierte los hashes
-sqlite3 "$DB_FILE" "SELECT name, passwd, salt FROM user" | while IFS='|' read -r name passwd salt; do
-    decoded_salt=$(echo "$salt" | xxd -p -r | base64)
-    digest=$(echo "$passwd")
-    echo "sha256:50000:$decoded_salt:$digest"
+# Extrae los datos de la base de datos y los convierte en el formato deseado
+sqlite3 "$DB_FILE" "SELECT name, passwd, salt FROM user" | while read -r line; do
+    salt="$(echo "$line" | awk -F'|' '{print $3}' | xxd -p -r | base64)"
+    digest="$(echo "$line" | awk -F'|' '{print $2}' | xxd -p -r | base64)"
+    username="$(echo "$line" | awk -F'|' '{print $1}')"
+    echo "${username}:sha256:50000:${salt}:${digest}"
 done
