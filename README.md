@@ -4,3 +4,6 @@ This is a small script to extract hash once you have the gitea db file, it is re
 # Example use 
 
 ![image](https://github.com/user-attachments/assets/a6127395-0368-4e39-a53d-71ff5ecf1408)
+
+
+note: dont forget user --users on hashcat for to crack 
